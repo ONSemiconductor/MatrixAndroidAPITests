@@ -71,8 +71,6 @@ public class MainActivity extends AppCompatActivity implements Observer {
 
             this.progressBar = (ProgressBar)findViewById(R.id.progressBar);
 
-            TestRunnersServer.addObserver(this);
-
             this.tabHost = (TabHost)findViewById(android.R.id.tabhost);
             this.tabHost.setup();
 
@@ -96,8 +94,16 @@ public class MainActivity extends AppCompatActivity implements Observer {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+
+        TestRunnersServer.addObserver(this);
+    }
+
+    @Override
     public void onStop() {
         super.onStop();
+
         TestRunnersServer.removeObserver(this);
     }
 

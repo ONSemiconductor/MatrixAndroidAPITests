@@ -28,8 +28,10 @@ public class TestRunnersServer {
     private static ArrayList<Observer> observers = new ArrayList<>();
 
     public static void addObserver(Observer o) {
-        o.update(null, progress != 0);
-        observers.add(o);
+        if (!observers.contains(o)) {
+            o.update(null, progress != 0);
+            observers.add(o);
+        }
     }
 
     public static void removeObserver(Observer o) {
