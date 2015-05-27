@@ -1,0 +1,3 @@
+[submodule "MatrixAPITests"]
+	path = MatrixAPITests
+	url = https://github.com/alexey-trishin/MatrixAPITests
