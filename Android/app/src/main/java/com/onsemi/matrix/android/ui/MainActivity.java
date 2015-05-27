@@ -65,15 +65,16 @@ public class MainActivity extends AppCompatActivity implements Observer {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        settingsProvider.setContext(this);
-        Settings.setSettingsProvider(settingsProvider);
-
         try {
+            settingsProvider.setContext(this);
+            Settings.setSettingsProvider(settingsProvider);
+
             this.progressBar = (ProgressBar)findViewById(R.id.progressBar);
+
+            TestRunnersServer.addObserver(this);
 
             this.tabHost = (TabHost)findViewById(android.R.id.tabhost);
             this.tabHost.setup();
-
 
             if (testRunnerGroups == null) {
                 testRunnerGroups = TestRunnersProvider.getTestRunners(
@@ -89,8 +90,6 @@ public class MainActivity extends AppCompatActivity implements Observer {
 
                 this.tabHost.addTab(tabSpec);
             }
-
-            TestRunnersServer.addObserver(this);
         } catch (Exception e) {
             e.printStackTrace();
         }
