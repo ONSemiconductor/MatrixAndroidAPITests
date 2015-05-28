@@ -18,49 +18,49 @@ package com.onsemi.matrix.android.ui;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 import com.onsemi.matrix.api.SettingsProvider;
 import com.onsemi.matrix.android.R;
 
 public class AndroidSettingsProvider implements SettingsProvider {
-
     private final String DefaultUrl = "http://192.168.1.168";
+    private final int DefaultTimeout = 5000;
 
     private Context context = null;
 
-    public void setContext(Context c) {
-        context = c;
-    }
+    public AndroidSettingsProvider(Context context) {
+        this.context = context;
 
-    public Context getContext() {
-        return context;
+        String url = this.getUrl();
+
+        if (url == "" || url == null) {
+            this.setPreference(R.string.key_saved_url, DefaultUrl);
+        }
+
+        if (this.getDefaultTimeout() == 0) {
+            this.setPreference(R.string.key_saved_default_timeout, String.valueOf(DefaultTimeout));
+        }
     }
 
     @Override
     public String getUrl() {
-        if (context == null) {
-            throw new IllegalStateException("context is null");
-        }
-
-        String url = context.getSharedPreferences(context.getString(R.string.settings_file_key),
-                Context.MODE_PRIVATE).getString(context.getString(R.string.saved_url), null);
-
-        if (url == null || url == "") {
-            return DefaultUrl;
-        }
-
-        return url;
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getString(context.getString(R.string.key_saved_url), null);
     }
 
-    public void setUrl(String url) {
-        if (context == null) {
-            throw new IllegalStateException("context is null");
-        }
+    @Override
+    public int getDefaultTimeout() {
+        String defaultTimeout = PreferenceManager.getDefaultSharedPreferences(context)
+                .getString(context.getString(R.string.key_saved_default_timeout), null);
 
-        SharedPreferences.Editor editor = context.getSharedPreferences(
-                context.getString(R.string.settings_file_key), Context.MODE_PRIVATE).edit();
+        return defaultTimeout == "" || defaultTimeout == null ? 0 : Integer.parseInt(defaultTimeout);
+    }
 
-        editor.putString(context.getString(R.string.saved_url), url);
+    private void setPreference(int key, String value) {
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
+
+        editor.putString(context.getString(key), value);
 
         editor.commit();
     }

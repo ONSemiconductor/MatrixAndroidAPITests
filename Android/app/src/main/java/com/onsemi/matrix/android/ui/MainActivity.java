@@ -19,6 +19,7 @@ package com.onsemi.matrix.android.ui;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -55,8 +56,6 @@ import java.util.Observer;
 public class MainActivity extends AppCompatActivity implements Observer {
     public static List<RunnerGroup> testRunnerGroups = null;
 
-    private AndroidSettingsProvider settingsProvider = new AndroidSettingsProvider();
-
     private ProgressBar progressBar = null;
     private TabHost tabHost = null;
 
@@ -66,8 +65,7 @@ public class MainActivity extends AppCompatActivity implements Observer {
         setContentView(R.layout.activity_main);
 
         try {
-            settingsProvider.setContext(this);
-            Settings.setSettingsProvider(settingsProvider);
+            Settings.setSettingsProvider(new AndroidSettingsProvider(this));
 
             this.progressBar = (ProgressBar)findViewById(R.id.progressBar);
 
@@ -146,26 +144,7 @@ public class MainActivity extends AppCompatActivity implements Observer {
     }
 
     private void setSettings() {
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
-
-        alert.setTitle("Settings");
-        alert.setMessage("Camera url:");
-
-        final EditText edittext = new EditText(this);
-
-        edittext.setText(settingsProvider.getUrl());
-
-        alert.setView(edittext);
-
-        alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                settingsProvider.setUrl(edittext.getText().toString());
-            }
-        });
-
-        alert.setNegativeButton("Cancel", null);
-
-        alert.show();
+        this.startActivity(new Intent(this, SettingsActivity.class));
     }
 
     @Override
