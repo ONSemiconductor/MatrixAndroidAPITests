@@ -1,7 +1,0 @@
-<resources>
-    <string name="app_name">Camera Tests</string>
-    <string name="saved_ip">IP</string>
-    <string name="action_clean">Clean</string>
-    <string name="action_settings">Settings</string>
-    <string name="settings_file_key">com.akvelon.cameratests.SETTINGS_FILE</string>
-</resources>
