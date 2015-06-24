@@ -1,13 +1,19 @@
 <resources>
     <string name="app_name">Camera Tests</string>
 
-    <string name="key_saved_url">url</string>
-    <string name="title_saved_url">Camera url</string>
+    <string name="key_saved_default_ip">defaultIP</string>
+    <string name="title_saved_default_ip">Camera IP (default)</string>
+
+    <string name="key_saved_test_ip">testIP</string>
+    <string name="title_saved_test_ip">Camera IP (test)</string>
 
     <string name="title_settings">Settings</string>
 
     <string name="key_saved_default_timeout">defaultTimeout</string>
     <string name="title_saved_default_timeout">Default timeout</string>
+
+    <string name="key_saved_after_test_delay">afterTestDelay</string>
+    <string name="title_saved_after_test_delay">After test delay</string>
 
     <string name="action_clean">Clean</string>
     <string name="action_settings">Settings</string>

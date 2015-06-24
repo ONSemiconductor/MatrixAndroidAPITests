@@ -2,10 +2,18 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <EditTextPreference
-        android:key="@string/key_saved_url"
-        android:title="@string/title_saved_url" />
+        android:key="@string/key_saved_default_ip"
+        android:title="@string/title_saved_default_ip" />
+
+    <EditTextPreference
+        android:key="@string/key_saved_test_ip"
+        android:title="@string/title_saved_test_ip" />
 
     <EditTextPreference
         android:key="@string/key_saved_default_timeout"
         android:title="@string/title_saved_default_timeout" />
+
+    <EditTextPreference
+        android:key="@string/key_saved_after_test_delay"
+        android:title="@string/title_saved_after_test_delay" />
 </PreferenceScreen>
