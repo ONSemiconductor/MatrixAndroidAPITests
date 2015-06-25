@@ -38,6 +38,7 @@ import com.onsemi.matrix.android.Status;
 import com.onsemi.matrix.android.Test;
 import com.onsemi.matrix.android.TestRunnersProvider;
 import com.onsemi.matrix.android.TestRunnersServer;
+import com.onsemi.matrix.api.RecordingTest;
 import com.onsemi.matrix.api.Settings;
 import com.onsemi.matrix.android.R;
 import com.onsemi.matrix.api.AudioTest;
@@ -75,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements Observer {
             if (testRunnerGroups == null) {
                 testRunnerGroups = TestRunnersProvider.getTestRunners(
                         AudioTest.class, VideoTest.class, MaintenanceTest.class,
-                        SystemTest.class, NetworkTest.class, UserTest.class);
+                        SystemTest.class, NetworkTest.class, UserTest.class, RecordingTest.class);
             }
 
             for(RunnerGroup testRunnerGroup : testRunnerGroups) {

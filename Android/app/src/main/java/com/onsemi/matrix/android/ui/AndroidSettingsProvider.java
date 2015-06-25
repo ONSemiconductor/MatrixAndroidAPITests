@@ -24,7 +24,9 @@ import com.onsemi.matrix.api.SettingsProvider;
 import com.onsemi.matrix.android.R;
 
 public class AndroidSettingsProvider implements SettingsProvider {
-    private final String DefaultUrl = "http://192.168.1.168";
+    private final String DefaultIP = "192.168.1.168";
+    private final String TestIP = "192.168.1.169";
+
     private final int DefaultTimeout = 5000;
 
     private Context context = null;
@@ -32,21 +34,49 @@ public class AndroidSettingsProvider implements SettingsProvider {
     public AndroidSettingsProvider(Context context) {
         this.context = context;
 
-        String url = this.getUrl();
+        String defaultIP = this.getDefaultIP();
 
-        if (url == "" || url == null) {
-            this.setPreference(R.string.key_saved_url, DefaultUrl);
+        if (defaultIP == "" || defaultIP == null) {
+            this.setPreference(R.string.key_saved_default_ip, DefaultIP);
+        }
+
+        String testIP = this.getTestIP();
+
+        if (testIP == "" || testIP == null) {
+            this.setPreference(R.string.key_saved_test_ip, TestIP);
         }
 
         if (this.getDefaultTimeout() == 0) {
             this.setPreference(R.string.key_saved_default_timeout, String.valueOf(DefaultTimeout));
         }
+
+        if (this.getAfterTestDelay() == 0) {
+            this.setPreference(R.string.key_saved_after_test_delay, String.valueOf(0));
+        }
+    }
+
+    public String getUrl() {
+        return String.format("http://%s", this.getDefaultIP());
     }
 
     @Override
-    public String getUrl() {
+    public String getDefaultIP() {
         return PreferenceManager.getDefaultSharedPreferences(context)
-                .getString(context.getString(R.string.key_saved_url), null);
+                .getString(context.getString(R.string.key_saved_default_ip), null);
+    }
+
+    @Override
+    public String getTestIP() {
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getString(context.getString(R.string.key_saved_test_ip), null);
+    }
+
+    @Override
+    public int getAfterTestDelay() {
+        String afterTestDelay = PreferenceManager.getDefaultSharedPreferences(context)
+                .getString(context.getString(R.string.key_saved_after_test_delay), null);
+
+        return afterTestDelay == "" || afterTestDelay == null ? 0 : Integer.parseInt(afterTestDelay);
     }
 
     @Override
