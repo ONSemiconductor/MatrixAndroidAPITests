@@ -9,6 +9,23 @@
     android:background="@color/black"
     tools:context=".MainActivity">
 
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/runAllTestsButton"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:background="@drawable/custom_button"
+            android:textColor="@color/white"
+            android:text="run all tests"/>
+
     <TabHost
         android:id="@android:id/tabhost"
         android:layout_width="fill_parent"
@@ -32,6 +49,7 @@
             </FrameLayout>
         </LinearLayout>
     </TabHost>
+    </LinearLayout>
 
     <ProgressBar
         style="?android:attr/progressBarStyleLarge"

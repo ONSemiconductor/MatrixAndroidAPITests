@@ -16,9 +16,7 @@
 
 package com.onsemi.matrix.android.ui;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -27,7 +25,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ProgressBar;
 import android.widget.TabHost;
@@ -49,6 +46,7 @@ import com.onsemi.matrix.api.UserTest;
 import com.onsemi.matrix.api.VideoTest;
 
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -56,6 +54,8 @@ import java.util.Observer;
 
 public class MainActivity extends AppCompatActivity implements Observer {
     public static List<RunnerGroup> testRunnerGroups = null;
+
+    private AndroidSettingsProvider settingsProvider = null;
 
     private ProgressBar progressBar = null;
     private TabHost tabHost = null;
@@ -66,26 +66,40 @@ public class MainActivity extends AppCompatActivity implements Observer {
         setContentView(R.layout.activity_main);
 
         try {
-            Settings.setSettingsProvider(new AndroidSettingsProvider(this));
-
+            this.settingsProvider = new AndroidSettingsProvider(this);
             this.progressBar = (ProgressBar)findViewById(R.id.progressBar);
 
-            this.tabHost = (TabHost)findViewById(android.R.id.tabhost);
-            this.tabHost.setup();
+            Settings.setSettingsProvider(this.settingsProvider);
 
             if (testRunnerGroups == null) {
+                this.tabHost = (TabHost) findViewById(android.R.id.tabhost);
+
+                this.tabHost.setup();
+                this.tabHost.clearAllTabs();
+
                 testRunnerGroups = TestRunnersProvider.getTestRunners(
-                        AudioTest.class, VideoTest.class, MaintenanceTest.class,
-                        SystemTest.class, NetworkTest.class, UserTest.class, RecordingTest.class);
-            }
+                        new Class<?>[]{AudioTest.class, VideoTest.class, MaintenanceTest.class,
+                                SystemTest.class, NetworkTest.class, UserTest.class, RecordingTest.class});
 
-            for(RunnerGroup testRunnerGroup : testRunnerGroups) {
-                TabHost.TabSpec tabSpec = this.tabHost.newTabSpec(testRunnerGroup.getName());
+                for (RunnerGroup testRunnerGroup : testRunnerGroups) {
+                    TabHost.TabSpec tabSpec = this.tabHost.newTabSpec(testRunnerGroup.getName());
 
-                tabSpec.setIndicator(testRunnerGroup.getName());
-                tabSpec.setContent(new TabContentFactory(this, testRunnerGroup));
+                    tabSpec.setIndicator(testRunnerGroup.getName());
+                    tabSpec.setContent(new TabContentFactory(this, testRunnerGroup));
 
-                this.tabHost.addTab(tabSpec);
+                    this.tabHost.addTab(tabSpec);
+                }
+
+                Button runAllTestsButton = (Button) findViewById(R.id.runAllTestsButton);
+
+                runAllTestsButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        TestRunnersServer.executeTests(testRunnerGroups,
+                                MainActivity.this.settingsProvider.getIgnoredTests());
+                    }
+                });
+
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -117,10 +131,13 @@ public class MainActivity extends AppCompatActivity implements Observer {
         int id = item.getItemId();
 
         if (id == R.id.action_settings) {
-            this.setSettings();
+            this.startActivity(new Intent(this, SettingsActivity.class));
             return true;
         } else if (id == R.id.action_clean) {
             this.cleanTests();
+            return true;
+        } else if (id == R.id.action_cancel) {
+            TestRunnersServer.cancel();
             return true;
         }
 
@@ -142,10 +159,6 @@ public class MainActivity extends AppCompatActivity implements Observer {
 
             testRunnerGroup.notifyObservers();
         }
-    }
-
-    private void setSettings() {
-        this.startActivity(new Intent(this, SettingsActivity.class));
     }
 
     @Override

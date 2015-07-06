@@ -35,6 +35,8 @@ public class ExtendedHttpJUnitRunner extends HttpJUnitRunner {
     private List<Test> tests;
     private Hashtable<Test, Boolean> executableTests;
 
+    private List<String> ignoredTests = null;
+
     private RunnerGroup runnerGroup;
 
 	public ExtendedHttpJUnitRunner(String name, Class<?> klass) throws InitializationError {
@@ -81,38 +83,48 @@ public class ExtendedHttpJUnitRunner extends HttpJUnitRunner {
         }
     }
 
-    public void run(RunNotifier notifier, Test executableTest) throws NoTestsRemainException {
-        if (executableTest != null) {
-            this.executableTests.put(executableTest, false);
+    public void run(RunNotifier notifier, Configuration configuration) throws NoTestsRemainException {
+        if (configuration.getExecutableTest() != null) {
+            this.executableTests.put(configuration.getExecutableTest(), false);
+        } else {
+            this.executableTests.clear();
+        }
+
+        if (configuration.getIgnoredTests() != null) {
+            this.ignoredTests = configuration.getIgnoredTests();
         }
 
         super.run(notifier);
 
-        if (executableTest != null) {
-            this.executableTests.remove(executableTest);
+        if (configuration.getExecutableTest() != null) {
+            this.executableTests.remove(configuration.getExecutableTest());
         }
-    }
 
-    @Override
-    public void run(RunNotifier notifier) {
-        this.executableTests.clear();
-
-        super.run(notifier);
+        if (configuration.getIgnoredTests() != null) {
+            this.ignoredTests = null;
+        }
     }
 
     @Override
     public void runChild(FrameworkMethod method, RunNotifier notifier) {
+        String methodName = method.getName();
+
+        if (this.ignoredTests != null ) {
+            for(String ignoredTest : this.ignoredTests) {
+                if(ignoredTest.compareTo(methodName) == 0) {
+                    return;
+                }
+            }
+        }
+
         if (this.executableTests.isEmpty()) {
             super.runChild(method, notifier);
             return;
         }
 
-        String methodName = method.getName();
-
         for(Test executableTest : this.executableTests.keySet()) {
             if (executableTest.getMethodName().compareTo(methodName) == 0 &&
                     !this.executableTests.get(executableTest)) {
-
                 super.runChild(method, notifier);
 
                 this.executableTests.put(executableTest, true);
