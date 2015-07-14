@@ -23,9 +23,22 @@ import android.preference.PreferenceManager;
 import com.onsemi.matrix.api.SettingsProvider;
 import com.onsemi.matrix.android.R;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 public class AndroidSettingsProvider implements SettingsProvider {
     private final String DefaultIP = "192.168.1.168";
     private final String TestIP = "192.168.1.169";
+
+    private final String[] ignoredTests = new String[] {
+            "lanip_SetIPToTestIP_ShouldBeEqualTestIP",
+            "firmwareupgrade_StartUpgrade_ShouldReturnOK",
+            "firmwareupgrade_StartUpgradeWithParameterValue_ShouldReturnNG",
+            "configurationrestore_RestoreConfiguration_ShouldReturnOK",
+            "configurationrestore_RestoreConfigurationWithParameterValue_ShouldReturnNG"
+    };
 
     private final int DefaultTimeout = 5000;
 
@@ -63,6 +76,10 @@ public class AndroidSettingsProvider implements SettingsProvider {
     public String getDefaultIP() {
         return PreferenceManager.getDefaultSharedPreferences(context)
                 .getString(context.getString(R.string.key_saved_default_ip), null);
+    }
+
+    public List<String> getIgnoredTests() {
+        return Arrays.asList(ignoredTests);
     }
 
     @Override

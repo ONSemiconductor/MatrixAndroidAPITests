@@ -20,12 +20,15 @@ import org.junit.runner.manipulation.NoTestsRemainException;
 import org.junit.runner.notification.RunNotifier;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Observer;
 
 public class TestRunnersServer {
     private static int progress = 0;
 
     private static ArrayList<Observer> observers = new ArrayList<>();
+
+    private static ArrayList<CancelToken> tokens = new ArrayList<>();
 
     public static void addObserver(Observer o) {
         if (!observers.contains(o)) {
@@ -39,19 +42,55 @@ public class TestRunnersServer {
     }
 
     public static void cancel() {
-        progress = 0;
-        update();
-
-        //TODO: cancel all working threads
+        for(CancelToken token : tokens) {
+            token.cancel();
+        }
     }
 
     public static void executeTests(final RunnerGroup runnerGroup) {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
+                CancelToken token = new CancelToken();
+
+                tokens.add(token);
+
                 for (ExtendedHttpJUnitRunner runner : runnerGroup.getRunners()) {
-                    execute(runner, null);
+                    if(token.isCancelled()) {
+                        tokens.remove(token);
+                        return;
+                    }
+
+                    execute(runner, new Configuration());
                 }
+
+                tokens.remove(token);
+            }
+        });
+
+        thread.start();
+    }
+
+    public static void executeTests(final List<RunnerGroup> runnerGroups, final List<String> ignoredTests) {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                CancelToken token = new CancelToken();
+
+                tokens.add(token);
+
+                for(RunnerGroup runnerGroup : runnerGroups) {
+                    for (ExtendedHttpJUnitRunner runner : runnerGroup.getRunners()) {
+                        if(token.isCancelled()) {
+                            tokens.remove(token);
+                            return;
+                        }
+
+                        execute(runner, new Configuration(ignoredTests));
+                    }
+                }
+
+                tokens.remove(token);
             }
         });
 
@@ -62,14 +101,14 @@ public class TestRunnersServer {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                execute(runner, test);
+                execute(runner, new Configuration(test));
             }
         });
 
         thread.start();
     }
 
-    private static void execute(final ExtendedHttpJUnitRunner runner, final Test test) {
+    private static void execute(final ExtendedHttpJUnitRunner runner, Configuration config) {
         try {
             progress++;
 
@@ -78,16 +117,12 @@ public class TestRunnersServer {
             RunNotifier notifier = new RunNotifier();
             notifier.addListener(new TestsRunListener(runner));
 
-            if (test == null) {
-                runner.run(notifier);
-            } else {
-                runner.run(notifier, test);
-            }
+            runner.run(notifier, config);
 
             progress--;
 
             update();
-        } catch (NoTestsRemainException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

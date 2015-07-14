@@ -24,7 +24,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.model.InitializationError;
 
 public class TestRunnersProvider {
-	public static List<RunnerGroup> getTestRunners(Class<?>... classes) throws InitializationError {
+	public static List<RunnerGroup> getTestRunners(Class<?>[] classes) throws InitializationError {
 		List<RunnerGroup> runners = new ArrayList<RunnerGroup>();
 		
 		for(Class<?> klass : classes) {

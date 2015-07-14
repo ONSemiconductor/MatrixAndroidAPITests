@@ -3,9 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".MainActivity">
 
-    <item android:id="@+id/action_settings"
-        android:title="@string/action_settings"
-        android:icon="@drawable/ic_action_settings"
+    <item android:id="@+id/action_cancel"
+        android:title="@string/action_clean"
+        android:icon="@android:drawable/ic_menu_close_clear_cancel"
         android:orderInCategory="100"
         app:showAsAction="always" />
 
@@ -13,5 +13,11 @@
         android:title="@string/action_clean"
         android:icon="@android:drawable/ic_menu_delete"
         android:orderInCategory="101"
+        app:showAsAction="always" />
+
+    <item android:id="@+id/action_settings"
+        android:title="@string/action_settings"
+        android:icon="@drawable/ic_action_settings"
+        android:orderInCategory="102"
         app:showAsAction="always" />
 </menu>
