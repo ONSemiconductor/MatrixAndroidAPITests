@@ -46,7 +46,6 @@ import com.onsemi.matrix.api.UserTest;
 import com.onsemi.matrix.api.VideoTest;
 
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -72,35 +71,22 @@ public class MainActivity extends AppCompatActivity implements Observer {
             Settings.setSettingsProvider(this.settingsProvider);
 
             if (testRunnerGroups == null) {
-                this.tabHost = (TabHost) findViewById(android.R.id.tabhost);
-
-                this.tabHost.setup();
-                this.tabHost.clearAllTabs();
-
                 testRunnerGroups = TestRunnersProvider.getTestRunners(
                         new Class<?>[]{AudioTest.class, VideoTest.class, MaintenanceTest.class,
                                 SystemTest.class, NetworkTest.class, UserTest.class, RecordingTest.class});
-
-                for (RunnerGroup testRunnerGroup : testRunnerGroups) {
-                    TabHost.TabSpec tabSpec = this.tabHost.newTabSpec(testRunnerGroup.getName());
-
-                    tabSpec.setIndicator(testRunnerGroup.getName());
-                    tabSpec.setContent(new TabContentFactory(this, testRunnerGroup));
-
-                    this.tabHost.addTab(tabSpec);
-                }
-
-                Button runAllTestsButton = (Button) findViewById(R.id.runAllTestsButton);
-
-                runAllTestsButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        TestRunnersServer.executeTests(testRunnerGroups,
-                                MainActivity.this.settingsProvider.getIgnoredTests());
-                    }
-                });
-
             }
+
+            this.initializeTabHost();
+
+            Button runAllTestsButton = (Button)findViewById(R.id.runAllTestsButton);
+
+            runAllTestsButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    TestRunnersServer.executeTests(testRunnerGroups,
+                            MainActivity.this.settingsProvider.getIgnoredTests());
+                }
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -142,6 +128,26 @@ public class MainActivity extends AppCompatActivity implements Observer {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void initializeTabHost() {
+        if(testRunnerGroups == null) {
+            return;
+        }
+
+        this.tabHost = (TabHost)findViewById(android.R.id.tabhost);
+
+        this.tabHost.setup();
+        this.tabHost.clearAllTabs();
+
+        for (RunnerGroup testRunnerGroup : testRunnerGroups) {
+            TabHost.TabSpec tabSpec = this.tabHost.newTabSpec(testRunnerGroup.getName());
+
+            tabSpec.setIndicator(testRunnerGroup.getName());
+            tabSpec.setContent(new TabContentFactory(this, testRunnerGroup));
+
+            this.tabHost.addTab(tabSpec);
+        }
     }
 
     private void cleanTests() {
