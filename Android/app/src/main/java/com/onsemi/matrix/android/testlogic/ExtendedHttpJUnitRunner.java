@@ -14,16 +14,14 @@
 ** limitations under the License.
 */
 
-package com.onsemi.matrix.android;
+package com.onsemi.matrix.android.testlogic;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Observer;
 
 import com.eclipsesource.restfuse.HttpJUnitRunner;
 
-import org.junit.runner.Runner;
 import org.junit.runner.manipulation.NoTestsRemainException;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.model.FrameworkMethod;

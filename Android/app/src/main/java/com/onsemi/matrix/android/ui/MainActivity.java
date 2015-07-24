@@ -29,12 +29,13 @@ import android.widget.ExpandableListView;
 import android.widget.ProgressBar;
 import android.widget.TabHost;
 
-import com.onsemi.matrix.android.ExtendedHttpJUnitRunner;
-import com.onsemi.matrix.android.RunnerGroup;
-import com.onsemi.matrix.android.Status;
-import com.onsemi.matrix.android.Test;
-import com.onsemi.matrix.android.TestRunnersProvider;
-import com.onsemi.matrix.android.TestRunnersServer;
+import com.onsemi.matrix.android.testlogic.ExtendedHttpJUnitRunner;
+import com.onsemi.matrix.android.testlogic.RunnerGroup;
+import com.onsemi.matrix.android.testlogic.Status;
+import com.onsemi.matrix.android.testlogic.Test;
+import com.onsemi.matrix.android.testlogic.TestRunnersProvider;
+import com.onsemi.matrix.android.testlogic.TestRunnersServer;
+import com.onsemi.matrix.android.pushnotification.RegistrationIntentService;
 import com.onsemi.matrix.api.RecordingTest;
 import com.onsemi.matrix.api.Settings;
 import com.onsemi.matrix.android.R;
@@ -87,6 +88,8 @@ public class MainActivity extends AppCompatActivity implements Observer {
                             MainActivity.this.settingsProvider.getIgnoredTests());
                 }
             });
+
+            RegistrationIntentService.setSettingsProvider(this.settingsProvider);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -95,6 +98,8 @@ public class MainActivity extends AppCompatActivity implements Observer {
     @Override
     protected void onStart() {
         super.onStart();
+
+        this.startService(new Intent(this, RegistrationIntentService.class));
 
         TestRunnersServer.addObserver(this);
     }

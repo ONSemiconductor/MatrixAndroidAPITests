@@ -19,7 +19,7 @@ package com.onsemi.matrix.android.ui;
 import android.content.Context;
 import android.content.res.Resources;
 
-import com.onsemi.matrix.android.Status;
+import com.onsemi.matrix.android.testlogic.Status;
 import com.onsemi.matrix.android.R;
 
 

@@ -26,9 +26,9 @@ import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.onsemi.matrix.android.ExtendedHttpJUnitRunner;
-import com.onsemi.matrix.android.Test;
-import com.onsemi.matrix.android.TestRunnersServer;
+import com.onsemi.matrix.android.testlogic.ExtendedHttpJUnitRunner;
+import com.onsemi.matrix.android.testlogic.Test;
+import com.onsemi.matrix.android.testlogic.TestRunnersServer;
 import com.onsemi.matrix.android.R;
 
 import java.util.List;

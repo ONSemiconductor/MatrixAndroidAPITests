@@ -14,17 +14,29 @@
 ** limitations under the License.
 */
 
-package com.onsemi.matrix.android;
+package com.onsemi.matrix.android.testlogic;
 
+import java.util.List;
 
-public class CancelToken {
-    private Boolean isCancelled = false;
+public class Configuration {
+    private List<String> ignoredTests = null;
+    private Test executableTest = null;
 
-    public Boolean isCancelled() {
-        return this.isCancelled;
+    public Configuration() { }
+
+    public Configuration(Test executableTest) {
+        this.executableTest = executableTest;
     }
 
-    public void cancel() {
-        this.isCancelled = true;
+    public Configuration(List<String> ignoredTests) {
+        this.ignoredTests = ignoredTests;
+    }
+
+    public List<String> getIgnoredTests() {
+        return this.ignoredTests;
+    }
+
+    public Test getExecutableTest() {
+        return this.executableTest;
     }
 }
