@@ -14,17 +14,22 @@
 ** limitations under the License.
 */
 
-package com.onsemi.matrix.android;
+package com.onsemi.matrix.android.testlogic;
 
+public enum Status {
+    Failed, Passed, NotRun;
 
-public class CancelToken {
-    private Boolean isCancelled = false;
+    @Override
+    public String toString() {
+        switch(this) {
+            case Failed:
+                return "Failed";
+            case Passed:
+                return "Passed";
+            case NotRun:
+                return "Not Run";
+        }
 
-    public Boolean isCancelled() {
-        return this.isCancelled;
-    }
-
-    public void cancel() {
-        this.isCancelled = true;
+        return null;
     }
 }

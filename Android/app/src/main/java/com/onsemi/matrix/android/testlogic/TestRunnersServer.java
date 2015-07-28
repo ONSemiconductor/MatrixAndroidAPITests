@@ -14,9 +14,8 @@
 ** limitations under the License.
 */
 
-package com.onsemi.matrix.android;
+package com.onsemi.matrix.android.testlogic;
 
-import org.junit.runner.manipulation.NoTestsRemainException;
 import org.junit.runner.notification.RunNotifier;
 
 import java.util.ArrayList;

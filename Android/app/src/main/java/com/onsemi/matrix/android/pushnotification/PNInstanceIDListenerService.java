@@ -14,22 +14,16 @@
 ** limitations under the License.
 */
 
-package com.onsemi.matrix.android;
+package com.onsemi.matrix.android.pushnotification;
 
-public enum Status {
-    Failed, Passed, NotRun;
+import android.content.Intent;
 
+import com.google.android.gms.iid.InstanceIDListenerService;
+
+public class PNInstanceIDListenerService extends InstanceIDListenerService {
     @Override
-    public String toString() {
-        switch(this) {
-            case Failed:
-                return "Failed";
-            case Passed:
-                return "Passed";
-            case NotRun:
-                return "Not Run";
-        }
-
-        return null;
+    public void onTokenRefresh() {
+        Intent intent = new Intent(this, RegistrationIntentService.class);
+        startService(intent);
     }
 }

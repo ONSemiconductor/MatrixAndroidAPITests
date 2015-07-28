@@ -14,7 +14,11 @@
 ** limitations under the License.
 */
 
-package com.onsemi.matrix.android;
+package com.onsemi.matrix.android.testlogic;
+
+import com.onsemi.matrix.android.pushnotification.PNGcmListenerService;
+import com.onsemi.matrix.api.PushNotificationCheck;
+import com.onsemi.matrix.api.Settings;
 
 import org.junit.runner.Description;
 import org.junit.runner.notification.Failure;
@@ -49,11 +53,26 @@ public class TestsRunListener extends RunListener {
     }
 
     @Override
-    public void testFinished(Description description) {
+    public void testFinished(Description description) throws InterruptedException {
         String methodName = description.getMethodName();
 
         if (this.methodNames.contains(methodName)) {
+            PushNotificationCheck pncAnnotation = description.getAnnotation(PushNotificationCheck.class);
+
             this.methodNames.remove(methodName);
+
+            if (pncAnnotation != null) {
+                Thread.sleep(5000);
+
+                if (!PNGcmListenerService.containsMessage(Settings.getPushMessage())) {
+                    this.runner.updateTest(methodName, Status.Failed, "Device doesn't get push notification.");
+                    return;
+                }
+
+                PNGcmListenerService.deleteMessages();
+            }
+
+
             this.runner.updateTest(methodName, Status.Passed, null);
         }
     }

@@ -14,35 +14,17 @@
 ** limitations under the License.
 */
 
-package com.onsemi.matrix.android;
+package com.onsemi.matrix.android.testlogic;
 
-public class Test {
-    private String methodName;
-    private String error;
-    private Status status;
 
-    public Test(String methodName) {
-        this.methodName = methodName;
-        this.status = Status.NotRun;
+public class CancelToken {
+    private Boolean isCancelled = false;
+
+    public Boolean isCancelled() {
+        return this.isCancelled;
     }
 
-    public String getMethodName() {
-        return this.methodName;
-    }
-
-    public String getError() {
-        return this.error;
-    }
-
-    public Status getStatus() {
-        return this.status;
-    }
-
-    public void setError(String error) {
-        this.error = error;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
+    public void cancel() {
+        this.isCancelled = true;
     }
 }

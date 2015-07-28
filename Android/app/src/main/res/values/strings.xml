@@ -10,10 +10,18 @@
     <string name="title_settings">Settings</string>
 
     <string name="key_saved_default_timeout">defaultTimeout</string>
-    <string name="title_saved_default_timeout">Default timeout</string>
+    <string name="title_saved_default_timeout">Default Timeout</string>
 
     <string name="key_saved_after_test_delay">afterTestDelay</string>
-    <string name="title_saved_after_test_delay">After test delay</string>
+    <string name="title_saved_after_test_delay">After Test Delay</string>
+
+    <string name="key_saved_push_service_url">pushServiceUrl</string>
+    <string name="title_saved_push_service_url">Push Service Url</string>
+
+    <string name="key_saved_project_number">projectNumber</string>
+    <string name="title_saved_project_number">Project Number</string>
+
+    <string name="title_push_notification_settings">Push Notification</string>
 
     <string name="action_clean">Clean</string>
     <string name="action_settings">Settings</string>

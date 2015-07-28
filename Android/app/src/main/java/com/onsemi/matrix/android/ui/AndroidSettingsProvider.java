@@ -32,6 +32,11 @@ public class AndroidSettingsProvider implements SettingsProvider {
     private final String DefaultIP = "192.168.1.168";
     private final String TestIP = "192.168.1.169";
 
+    private final String PushServiceUrl = "https://liquid-verbena-100614.appspot.com/_ah/api/messaging/v1/sendMessage/";
+    private final String ProjectNumber = "34658119658";
+
+    private final String PushMessage = "Hi!(Android)";
+
     private final String[] ignoredTests = new String[] {
             "lanip_SetIPToTestIP_ShouldBeEqualTestIP",
             "firmwareupgrade_StartUpgrade_ShouldReturnOK",
@@ -47,16 +52,20 @@ public class AndroidSettingsProvider implements SettingsProvider {
     public AndroidSettingsProvider(Context context) {
         this.context = context;
 
-        String defaultIP = this.getDefaultIP();
-
-        if (defaultIP == "" || defaultIP == null) {
+        if (this.getDefaultIP() == "" || this.getDefaultIP() == null) {
             this.setPreference(R.string.key_saved_default_ip, DefaultIP);
         }
 
-        String testIP = this.getTestIP();
-
-        if (testIP == "" || testIP == null) {
+        if (this.getTestIP() == "" || this.getTestIP() == null) {
             this.setPreference(R.string.key_saved_test_ip, TestIP);
+        }
+
+        if (this.getPushServiceUrl() == "" || this.getPushServiceUrl() == null) {
+            this.setPreference(R.string.key_saved_push_service_url, PushServiceUrl);
+        }
+
+        if (this.getProjectNumber() == "" || this.getProjectNumber() == null) {
+            this.setPreference(R.string.key_saved_project_number, ProjectNumber);
         }
 
         if (this.getDefaultTimeout() == 0) {
@@ -82,6 +91,11 @@ public class AndroidSettingsProvider implements SettingsProvider {
         return Arrays.asList(ignoredTests);
     }
 
+    public String getProjectNumber() {
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getString(context.getString(R.string.key_saved_project_number), null);
+    }
+
     @Override
     public String getTestIP() {
         return PreferenceManager.getDefaultSharedPreferences(context)
@@ -102,6 +116,17 @@ public class AndroidSettingsProvider implements SettingsProvider {
                 .getString(context.getString(R.string.key_saved_default_timeout), null);
 
         return defaultTimeout == "" || defaultTimeout == null ? 0 : Integer.parseInt(defaultTimeout);
+    }
+
+    @Override
+    public String getPushServiceUrl() {
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getString(context.getString(R.string.key_saved_push_service_url), null);
+    }
+
+    @Override
+    public String getPushMessage() {
+        return PushMessage;
     }
 
     private void setPreference(int key, String value) {

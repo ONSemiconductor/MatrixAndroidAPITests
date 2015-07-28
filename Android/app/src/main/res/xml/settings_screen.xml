@@ -16,4 +16,17 @@
     <EditTextPreference
         android:key="@string/key_saved_after_test_delay"
         android:title="@string/title_saved_after_test_delay" />
+
+    <PreferenceCategory
+        android:title="@string/title_push_notification_settings"
+        android:key="push_notification_settings">
+
+        <EditTextPreference
+            android:key="@string/key_saved_project_number"
+            android:title="@string/title_saved_project_number" />
+
+        <EditTextPreference
+            android:key="@string/key_saved_push_service_url"
+            android:title="@string/title_saved_push_service_url" />
+    </PreferenceCategory>
 </PreferenceScreen>

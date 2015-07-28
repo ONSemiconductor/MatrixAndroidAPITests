@@ -29,12 +29,13 @@ import android.widget.ExpandableListView;
 import android.widget.ProgressBar;
 import android.widget.TabHost;
 
-import com.onsemi.matrix.android.ExtendedHttpJUnitRunner;
-import com.onsemi.matrix.android.RunnerGroup;
-import com.onsemi.matrix.android.Status;
-import com.onsemi.matrix.android.Test;
-import com.onsemi.matrix.android.TestRunnersProvider;
-import com.onsemi.matrix.android.TestRunnersServer;
+import com.onsemi.matrix.android.testlogic.ExtendedHttpJUnitRunner;
+import com.onsemi.matrix.android.testlogic.RunnerGroup;
+import com.onsemi.matrix.android.testlogic.Status;
+import com.onsemi.matrix.android.testlogic.Test;
+import com.onsemi.matrix.android.testlogic.TestRunnersProvider;
+import com.onsemi.matrix.android.testlogic.TestRunnersServer;
+import com.onsemi.matrix.android.pushnotification.RegistrationIntentService;
 import com.onsemi.matrix.api.RecordingTest;
 import com.onsemi.matrix.api.Settings;
 import com.onsemi.matrix.android.R;
@@ -46,7 +47,6 @@ import com.onsemi.matrix.api.UserTest;
 import com.onsemi.matrix.api.VideoTest;
 
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -72,35 +72,24 @@ public class MainActivity extends AppCompatActivity implements Observer {
             Settings.setSettingsProvider(this.settingsProvider);
 
             if (testRunnerGroups == null) {
-                this.tabHost = (TabHost) findViewById(android.R.id.tabhost);
-
-                this.tabHost.setup();
-                this.tabHost.clearAllTabs();
-
                 testRunnerGroups = TestRunnersProvider.getTestRunners(
                         new Class<?>[]{AudioTest.class, VideoTest.class, MaintenanceTest.class,
                                 SystemTest.class, NetworkTest.class, UserTest.class, RecordingTest.class});
-
-                for (RunnerGroup testRunnerGroup : testRunnerGroups) {
-                    TabHost.TabSpec tabSpec = this.tabHost.newTabSpec(testRunnerGroup.getName());
-
-                    tabSpec.setIndicator(testRunnerGroup.getName());
-                    tabSpec.setContent(new TabContentFactory(this, testRunnerGroup));
-
-                    this.tabHost.addTab(tabSpec);
-                }
-
-                Button runAllTestsButton = (Button) findViewById(R.id.runAllTestsButton);
-
-                runAllTestsButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        TestRunnersServer.executeTests(testRunnerGroups,
-                                MainActivity.this.settingsProvider.getIgnoredTests());
-                    }
-                });
-
             }
+
+            this.initializeTabHost();
+
+            Button runAllTestsButton = (Button)findViewById(R.id.runAllTestsButton);
+
+            runAllTestsButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    TestRunnersServer.executeTests(testRunnerGroups,
+                            MainActivity.this.settingsProvider.getIgnoredTests());
+                }
+            });
+
+            RegistrationIntentService.setSettingsProvider(this.settingsProvider);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -109,6 +98,8 @@ public class MainActivity extends AppCompatActivity implements Observer {
     @Override
     protected void onStart() {
         super.onStart();
+
+        this.startService(new Intent(this, RegistrationIntentService.class));
 
         TestRunnersServer.addObserver(this);
     }
@@ -142,6 +133,26 @@ public class MainActivity extends AppCompatActivity implements Observer {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void initializeTabHost() {
+        if(testRunnerGroups == null) {
+            return;
+        }
+
+        this.tabHost = (TabHost)findViewById(android.R.id.tabhost);
+
+        this.tabHost.setup();
+        this.tabHost.clearAllTabs();
+
+        for (RunnerGroup testRunnerGroup : testRunnerGroups) {
+            TabHost.TabSpec tabSpec = this.tabHost.newTabSpec(testRunnerGroup.getName());
+
+            tabSpec.setIndicator(testRunnerGroup.getName());
+            tabSpec.setContent(new TabContentFactory(this, testRunnerGroup));
+
+            this.tabHost.addTab(tabSpec);
+        }
     }
 
     private void cleanTests() {
